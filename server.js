@@ -24,3 +24,5 @@ app.get("/analyze/:url", function (req, res) {
     }
   });
 });
+
+app.listen(process.env.PORT);
