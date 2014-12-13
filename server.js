@@ -15,8 +15,7 @@ var getSongURL = function (pageURL, callback) {
 var app = express();
 
 app.get("*/*", function (req, res) {
-  console.log(req.originalUrl.substring(1));
-  getSongURL(req.params.url, function(error, url) {
+  getSongURL(req.originalUrl.substring(1), function(error, url) {
     if (error) {
       res.status(500).send();
     } else {
