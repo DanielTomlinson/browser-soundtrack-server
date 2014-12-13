@@ -1,5 +1,5 @@
 {
-  "name": "MHD Server",
+  "name": "mhd-server",
   "version": "1.0.0",
   "dependencies": {
     "request": "~2.51.1",
