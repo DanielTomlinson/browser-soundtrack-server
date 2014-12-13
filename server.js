@@ -23,7 +23,7 @@ var getSongURL = function(pageURL, callback) {
         var tracks = body.message.body.track_list;
         if (tracks.length < 1) return callback("no tracks");
         async.each(tracks, function(track, callback) {
-          console.log(track);
+          console.log(track.track.track_spotify_id);
           request({
             uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
             json: true
