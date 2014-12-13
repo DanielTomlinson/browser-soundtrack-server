@@ -7,7 +7,7 @@ var getSongURL = function (pageURL, callback) {
     url: pageURL,
     fields: "tags"
   } }, function (error, response, body) {
-    console.log(error, response, body);
+    console.log(body);
     callback(error, null);
   });
 };
