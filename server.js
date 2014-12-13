@@ -13,17 +13,19 @@ var getSongURL = function(pageURL, callback) {
     if (body.entities.length < 1) return callback("no entities");
     var previewURL = null;
     async.each(body.entities, function(entity, callback) {
+      console.log(entity.text);
       request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
         apikey: process.env.MUSIXMATCH_API_KEY,
-        q: body.entities[0].text,
+        q: entity.text,
         // s_track_rating: "desc"
       } }, function(error, response, body) {
         if (error) return callback(error);
         var tracks = body.message.body.track_list;
         if (tracks.length < 1) return callback("no tracks");
         async.each(tracks, function(track, callback) {
+          console.log(track.track.track_name);
           request({
-            uri: "https://api.spotify.com/v1/tracks/" + tracks[0].track.track_spotify_id,
+            uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
             json: true
           }, function(error, response, body) {
             if (error) return callback(error);
