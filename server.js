@@ -14,7 +14,8 @@ var getSongURL = function (pageURL, callback) {
 
 var app = express();
 
-app.get("/analyze/*url", function (req, res) {
+app.get("*/*", function (req, res) {
+  console.log(req.originalUrl.substring(1));
   getSongURL(req.params.url, function(error, url) {
     if (error) {
       res.status(500).send();
@@ -23,7 +24,5 @@ app.get("/analyze/*url", function (req, res) {
     }
   });
 });
-
-app.get("/", function(req, res) { res.send("hello world"); });
 
 app.listen(process.env.PORT);
