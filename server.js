@@ -8,7 +8,7 @@ var getSongURL = function (pageURL, callback) {
     url: pageURL
   } }, function (error, response, body) {
     if (error) return callback(error);
-    console.log(response);
+    if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
     console.log(body.entities.map(function(x) { return x.name }));
     request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
