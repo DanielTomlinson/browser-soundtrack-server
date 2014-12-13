@@ -35,6 +35,7 @@ var app = express();
 app.get("*/*", function (req, res) {
   getSongURL(req.originalUrl.substring(1), function(error, url) {
     if (error) {
+      console.log(error);
       res.status(500).send();
     } else {
       res.send(url);
