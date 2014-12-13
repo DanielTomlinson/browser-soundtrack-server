@@ -12,33 +12,35 @@ var getSongURL = function(pageURL, callback) {
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
     var previewURL = null;
-    async.each(body.entities, function(entity, callback) {
+    async.each(body.entities, function(entity, nextEntity) {
       console.log(entity.text);
       request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
         apikey: process.env.MUSIXMATCH_API_KEY,
         q: entity.text,
         // s_track_rating: "desc"
       } }, function(error, response, body) {
-        if (error) return callback(error);
+        if (error) return nextEntity(error);
         var tracks = body.message.body.track_list;
-        if (tracks.length < 1) return callback("no tracks");
-        async.each(tracks, function(track, callback) {
+        if (tracks.length < 1) return nextEntity("no tracks");
+        async.each(tracks, function(track, nextTrack) {
           console.log(track.track.track_spotify_id);
           request({
             uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
             json: true
           }, function(error, response, body) {
             console.log(error, body.preview_url);
-            if (error) return callback(error);
+            if (error) return nextTrack(error);
             previewURL = body.preview_url;
             if (previewURL) {
               console.log("calling back done")
-              callback("done");
+              nextTrack("done");
             } else {
-              callback();
+              nextTrack();
             }
           });
-        }, callback);
+        }, function(error) {
+          nextEntity(error);
+        });
       });
     }, function(error) {
       console.log("got callback: " + error);
