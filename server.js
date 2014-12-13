@@ -32,7 +32,11 @@ var getSongURL = function (pageURL, callback) {
 
 var app = express();
 
-app.get("*/*", function (req, res) {
+app.get("/", function(req, res) {
+  res.send();
+});
+
+app.get("*/*", function(req, res) {
   getSongURL(req.originalUrl.substring(1), function(error, url) {
     if (error) {
       console.log(error);
