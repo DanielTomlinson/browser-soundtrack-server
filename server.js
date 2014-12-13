@@ -7,7 +7,7 @@ var getSongURL = function (pageURL, callback) {
     outputMode: "json",
     url: pageURL
   } }, function (error, response, body) {
-    console.log(body);
+    console.log(response);
     if (error) return callback(error);
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
