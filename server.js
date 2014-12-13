@@ -4,6 +4,7 @@ var express = require("express");
 var getSongURL = function (pageURL, callback) {
   request.get({ uri: "http://access.alchemyapi.com/calls/url/URLGetRankedNamedEntities", json: true, qs: {
     apikey: process.env.ALCHEMY_API_KEY,
+    outputMode: "json",
     url: pageURL
   } }, function (error, response, body) {
     if (error) return callback(error);
