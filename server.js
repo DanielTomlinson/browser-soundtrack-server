@@ -2,14 +2,13 @@ var request = require("request");
 var express = require("express");
 
 var getSongURL = function (pageURL, callback) {
-  request.get({ uri: "http://api.diffbot.com/v3/analyze", json: true, qs: {
-    token: process.env.DIFFBOT_TOKEN,
-    url: pageURL,
-    fields: "tags"
+  request.get({ uri: "http://access.alchemyapi.com/calls/url/URLGetRankedNamedEntities", json: true, qs: {
+    apikey: process.env.ALCHEMY_API_KEY,
+    url: pageURL
   } }, function (error, response, body) {
     if (error) return callback(error);
-    if (body.objects.length < 1) return callback("no objects");
-    console.log(body.objects[0].tags);
+    if (body.entities.length < 1) return callback("no entities");
+    console.log(body.entities.map(function(x) { return x.name }));
     callback(null);
   });
 };
