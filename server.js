@@ -11,7 +11,7 @@ var getSongURL = function (pageURL, callback) {
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
     console.log(body);
-    console.log(body.entities.map(function(x) { return x.name }));
+    console.log(body.entities.map(function(x) { return x.text }));
     request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
       apikey: process.env.MUSIXMATCH_API_KEY,
       q: body.entities[0].text,
