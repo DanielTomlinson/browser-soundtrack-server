@@ -12,7 +12,7 @@ var getSongURL = function(pageURL, callback) {
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
     var previewURL = null;
-    async.each(body.entities, function(entity, nextEntity) {
+    async.eachSeries(body.entities, function(entity, nextEntity) {
       console.log(entity.text);
       request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
         apikey: process.env.MUSIXMATCH_API_KEY,
@@ -22,7 +22,7 @@ var getSongURL = function(pageURL, callback) {
         if (error) return nextEntity(error);
         var tracks = body.message.body.track_list;
         if (tracks.length < 1) return nextEntity("no tracks");
-        async.each(tracks, function(track, nextTrack) {
+        async.eachSeries(tracks, function(track, nextTrack) {
           console.log(track.track.track_spotify_id);
           request({
             uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
