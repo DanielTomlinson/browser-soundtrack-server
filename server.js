@@ -15,7 +15,7 @@ var getSongURL = function (pageURL, callback) {
     request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
       apikey: process.env.MUSIXMATCH_API_KEY,
       q: body.entities[0].text,
-      s_track_rating: "desc"
+      // s_track_rating: "desc"
     } }, function(error, response, body) {
       if (error) return callback(error);
       console.log(body);
