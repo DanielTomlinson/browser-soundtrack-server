@@ -1,7 +1,8 @@
 var request = require("request");
 var express = require("express");
+var async = require("async");
 
-var getSongURL = function (pageURL, callback) {
+var getSongURL = function(pageURL, callback) {
   request.get({ uri: "http://access.alchemyapi.com/calls/url/URLGetRankedNamedEntities", json: true, qs: {
     apikey: process.env.ALCHEMY_API_KEY,
     outputMode: "json",
@@ -12,22 +13,35 @@ var getSongURL = function (pageURL, callback) {
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
     console.log(body.entities.map(function(x) { return x.text }));
-    request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
-      apikey: process.env.MUSIXMATCH_API_KEY,
-      q: body.entities[0].text,
-      // s_track_rating: "desc"
-    } }, function(error, response, body) {
-      if (error) return callback(error);
-      console.log(body);
-      var tracks = body.message.body.track_list;
-      if (tracks.length < 1) return callback("no tracks");
-      request({
-        uri: "https://api.spotify.com/v1/tracks/" + tracks[0].track.track_spotify_id,
-        json: true
-      }, function(error, response, body) {
+    var previewURL = null;
+    async.each(body.entities, function(entity, callback) {
+      request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
+        apikey: process.env.MUSIXMATCH_API_KEY,
+        q: body.entities[0].text,
+        // s_track_rating: "desc"
+      } }, function(error, response, body) {
         if (error) return callback(error);
-        callback(null, body.preview_url || "no preview url");
+        console.log(body);
+        var tracks = body.message.body.track_list;
+        if (tracks.length < 1) return callback("no tracks");
+        request({
+          uri: "https://api.spotify.com/v1/tracks/" + tracks[0].track.track_spotify_id,
+          json: true
+        }, function(error, response, body) {
+          if (error) return callback(error);
+          if (body.preview_url) {
+            callback("done");
+          } else {
+            callback();
+          }
+        });
       });
+    }, function(error) {
+      if (error == "done") {
+        callback(null, previewURL);
+      } else {
+        callback(error);
+      }
     });
   });
 };
