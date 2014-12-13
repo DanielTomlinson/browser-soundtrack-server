@@ -28,6 +28,7 @@ var getSongURL = function(pageURL, callback) {
             uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
             json: true
           }, function(error, response, body) {
+            console.log(body);
             if (error) return callback(error);
             previewURL = body.preview_url;
             if (previewURL) {
