@@ -29,7 +29,8 @@ var getSongURL = function(pageURL, callback) {
           json: true
         }, function(error, response, body) {
           if (error) return callback(error);
-          if (body.preview_url) {
+          previewURL = body.preview_url;
+          if (previewURL) {
             callback("done");
           } else {
             callback();
