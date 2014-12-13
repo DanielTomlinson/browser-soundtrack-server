@@ -7,8 +7,10 @@ var getSongURL = function (pageURL, callback) {
     url: pageURL,
     fields: "tags"
   } }, function (error, response, body) {
-    console.log(body);
-    callback(error, null);
+    if (error) return callback(error);
+    if (body.objects.length < 1) return callback("no objects");
+    console.log(body.objects[0].tags);
+    callback(null);
   });
 };
 
