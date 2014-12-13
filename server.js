@@ -8,11 +8,9 @@ var getSongURL = function(pageURL, callback) {
     outputMode: "json",
     url: pageURL
   } }, function (error, response, body) {
-    console.log(response);
     if (error) return callback(error);
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
-    console.log(body.entities.map(function(x) { return x.text }));
     var previewURL = null;
     async.each(body.entities, function(entity, callback) {
       request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
@@ -21,21 +19,22 @@ var getSongURL = function(pageURL, callback) {
         // s_track_rating: "desc"
       } }, function(error, response, body) {
         if (error) return callback(error);
-        console.log(body);
         var tracks = body.message.body.track_list;
         if (tracks.length < 1) return callback("no tracks");
-        request({
-          uri: "https://api.spotify.com/v1/tracks/" + tracks[0].track.track_spotify_id,
-          json: true
-        }, function(error, response, body) {
-          if (error) return callback(error);
-          previewURL = body.preview_url;
-          if (previewURL) {
-            callback("done");
-          } else {
-            callback();
-          }
-        });
+        async.each(tracks, function(track, callback) {
+          request({
+            uri: "https://api.spotify.com/v1/tracks/" + tracks[0].track.track_spotify_id,
+            json: true
+          }, function(error, response, body) {
+            if (error) return callback(error);
+            previewURL = body.preview_url;
+            if (previewURL) {
+              callback("done");
+            } else {
+              callback();
+            }
+          });
+        }, callback);
       });
     }, function(error) {
       if (error == "done") {
