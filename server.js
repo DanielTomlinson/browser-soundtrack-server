@@ -32,7 +32,7 @@ var getSongURL = function(pageURL, callback) {
             if (error) return nextTrack(error);
             previewURL = body.preview_url;
             if (previewURL) {
-              console.log("calling back done")
+              console.log(track.track.track_name);
               nextTrack("done");
             } else {
               nextTrack();
@@ -43,7 +43,6 @@ var getSongURL = function(pageURL, callback) {
         });
       });
     }, function(error) {
-      console.log("got callback: " + error);
       if (error == "done") {
         callback(null, previewURL);
       } else {
