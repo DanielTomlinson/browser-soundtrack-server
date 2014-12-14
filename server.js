@@ -26,6 +26,7 @@ var getSongURL = function(pageURL, callback) {
         if (songs.length < 1) return nextEntity("no songs");
         async.eachSeries(songs, function(song, nextSong) {
           var tracks = song.tracks;
+          console.log(song.title + " has " + tracks.length + " tracks")
           if (tracks.length < 1) return nextSong();
           request({
             uri: "https://api.spotify.com/v1/tracks/" + tracks[0].foreign_id,
