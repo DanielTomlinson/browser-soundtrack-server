@@ -20,6 +20,7 @@ var getSongURL = function(pageURL, callback) {
         sort: "song_hotttness-desc",
         bucket: ["id:spotify", "tracks"]
       } }, function(error, response, body) {
+        console.log(body)
         if (error) return nextEntity(error);
         var songs = body.response.songs;
         if (songs.length < 1) return nextEntity("no songs");
