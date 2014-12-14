@@ -29,7 +29,7 @@ var getSongURL = function(pageURL, callback) {
           console.log(song.title + " has " + tracks.length + " tracks")
           if (tracks.length < 1) return nextSong();
           request({
-            uri: "https://api.spotify.com/v1/tracks/" + tracks[0].foreign_id,
+            uri: "https://api.spotify.com/v1/tracks/" + tracks[0].foreign_id.replace("spotify:track:", ""),
             json: true
           }, function(error, response, body) {
             console.log(error, body.preview_url);
