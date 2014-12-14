@@ -14,10 +14,11 @@ var getSongURL = function(pageURL, callback) {
     var previewURL = null;
     async.eachSeries(body.entities, function(entity, nextEntity) {
       console.log(entity.text);
-      request.get({ uri: "http://api.musixmatch.com/ws/1.1/track.search", json: true, qs: {
-        apikey: process.env.MUSIXMATCH_API_KEY,
-        q: entity.text,
-        // s_track_rating: "desc"
+      request.get({ uri: "http://developer.echonest.com/api/v4/song/search", json: true, useQuerystring: true, qs: {
+        api_key: process.env.ECHONEST_API_KEY,
+        title: entity.text,
+        sort: "song_hotttness-desc",
+        bucket: ["id:spotify", "tracks"]
       } }, function(error, response, body) {
         if (error) return nextEntity(error);
         var tracks = body.message.body.track_list;
