@@ -17,7 +17,7 @@ var getSongURL = function(pageURL, callback) {
       request.get({ uri: "http://developer.echonest.com/api/v4/song/search", json: true, useQuerystring: true, qs: {
         api_key: process.env.ECHONEST_API_KEY,
         title: entity.text,
-        sort: "song_hotttness-desc",
+        sort: "song_hotttnesss-desc",
         bucket: ["id:spotify", "tracks"]
       } }, function(error, response, body) {
         console.log(response.request.uri, body);
