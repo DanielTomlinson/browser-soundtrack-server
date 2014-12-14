@@ -21,22 +21,23 @@ var getSongURL = function(pageURL, callback) {
         bucket: ["id:spotify", "tracks"]
       } }, function(error, response, body) {
         if (error) return nextEntity(error);
-        var tracks = body.message.body.track_list;
-        if (tracks.length < 1) return nextEntity("no tracks");
-        async.eachSeries(tracks, function(track, nextTrack) {
-          console.log(track.track.track_spotify_id);
+        var songs = body.response.songs;
+        if (songs.length < 1) return nextEntity("no songs");
+        async.eachSeries(songs, function(song, nextSong) {
+          var tracks = song.tracks;
+          if (tracks.length < 1) return nextSong("no tracks");
           request({
-            uri: "https://api.spotify.com/v1/tracks/" + track.track.track_spotify_id,
+            uri: "https://api.spotify.com/v1/tracks/" + tracks[0].foreign_id,
             json: true
           }, function(error, response, body) {
             console.log(error, body.preview_url);
-            if (error) return nextTrack(error);
+            if (error) return nextSong(error);
             previewURL = body.preview_url;
             if (previewURL) {
-              console.log(track.track.track_name);
-              nextTrack("done");
+              console.log(song.title);
+              nextSong("done");
             } else {
-              nextTrack();
+              nextSong();
             }
           });
         }, function(error) {
