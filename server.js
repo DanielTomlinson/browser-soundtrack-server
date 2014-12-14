@@ -11,7 +11,7 @@ var getSongURL = function(pageURL, callback) {
     if (error) return callback(error);
     if (!body.hasOwnProperty("entities")) return callback("invalid alchemy response");
     if (body.entities.length < 1) return callback("no entities");
-    var previewURL = null;
+    var data = null;
     async.eachSeries(body.entities, function(entity, nextEntity) {
       console.log(entity.text);
       request.get({ uri: "http://developer.echonest.com/api/v4/song/search", json: true, useQuerystring: true, qs: {
@@ -34,8 +34,13 @@ var getSongURL = function(pageURL, callback) {
           }, function(error, response, body) {
             console.log(error, body.preview_url);
             if (error) return nextSong(error);
-            previewURL = body.preview_url;
-            if (previewURL) {
+            data = {
+              audio_url: body.preview_url,
+              artwork_url: body.album.images[body.album.images.length - 1].url,
+              title: song.title,
+              artist: body.artists[0].name
+            };
+            if (body.preview_url) {
               console.log(song.title);
               nextSong("done");
             } else {
@@ -48,7 +53,7 @@ var getSongURL = function(pageURL, callback) {
       });
     }, function(error) {
       if (error == "done") {
-        callback(null, previewURL);
+        callback(null, data);
       } else {
         callback(error);
       }
